@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://dubbo.apache.org/schema/dubbo"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	       http://dubbo.apache.org/schema/dubbo
+	       http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
+    <!-- 自定义名称 -->
+    <dubbo:application name="rest-provider"/>
+    <!-- 注册中心 -->
+    <dubbo:registry address="zookeeper://127.0.0.1:2181"/>
+
+    <dubbo:protocol name="rest" extension="com.test.Filter.MyFilter" port="8080" server="netty"/>
+    <dubbo:protocol name="dubbo" port="20890" server="netty4"/> <!-- #4 -->
+
+    <!-- 声明需要暴露的服务接口 -->
+    <dubbo:service interface="com.test.wy.RestService" protocol="dubbo" ref="userService"/>
+    <dubbo:service interface="com.test.wy.RestService" protocol="rest" ref="userService"/>
+
+    <bean id="myFilter" class="com.test.Filter.MyFilter"/>
+
+    <!-- 实现服务 -->
+    <bean id="userService" class="com.test.run.RestServiceImpl"/>
+</beans>
